@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Financial Goal Advisor - Made for India</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+
+        .section {
+            background: #f8f9ff;
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid #e1e8ff;
+        }
+
+        .section h2 {
+            color: #2d3748;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #4a5568;
+            font-weight: 600;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .goals-section {
+            grid-column: span 2;
+        }
+
+        .goal-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border: 2px solid #e2e8f0;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr auto;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .results-section {
+            grid-column: span 2;
+            background: #f0f4f8;
+            border: 2px solid #cbd5e0;
+        }
+
+        .personality-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin: 5px;
+        }
+
+        .aggressive { background: #ff6b6b; color: white; }
+        .moderate { background: #4ecdc4; color: white; }
+        .conservative { background: #45b7d1; color: white; }
+        .spender { background: #f39c12; color: white; }
+
+        .investment-plan {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 5px solid #667eea;
+        }
+
+        .investment-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .investment-item:last-child {
+            border-bottom: none;
+        }
+
+        .amount {
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .percentage {
+            background: #667eea;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 15px;
+            font-size: 12px;
+        }
+
+        .recommendation {
+            background: #e6fffa;
+            border: 1px solid #81e6d9;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 8px 0;
+            color: #234e52;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .alert-warning { background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
+        .alert-danger { background: #f8d7da; color: #721c24; border: 1px solid #f1c2c7; }
+
+        .indian-features {
+            background: linear-gradient(135deg, #ff9a56, #ff6b35);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .feature-item {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .emoji {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .risk-indicator {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .risk-low { background: #d4edda; color: #155724; }
+        .risk-medium { background: #fff3cd; color: #856404; }
+        .risk-high { background: #f8d7da; color: #721c24; }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                padding: 20px;
+            }
+
+            .goal-item {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏛️ AI Financial Goal Advisor</h1>
+            <p>Personalized Investment Planning for Indian Families</p>
+        </div>
+
+        <div class="indian-features">
+            <h3>🇮🇳 Built for India</h3>
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <div class="emoji">🏗️</div>
+                    <strong>PPF & ELSS</strong><br>
+                    Tax-saving investments
+                </div>
+                <div class="feature-item">
+                    <div class="emoji">🥇</div>
+                    <strong>Gold & Real Estate</strong><br>
+                    Traditional preferences
+                </div>
+                <div class="feature-item">
+                    <div class="emoji">🏙️</div>
+                    <strong>City-wise Planning</strong><br>
+                    Cost of living adjusted
+                </div>
+                <div class="feature-item">
+                    <div class="emoji">👨‍👩‍👧‍👦</div>
+                    <strong>Family-focused</strong><br>
+                    Dependents consideration
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <!-- User Profile Section -->
+            <div class="section">
+                <h2>👤 Your Profile</h2>
+                <form id="userForm">
+                    <div class="form-group">
+                        <label>Monthly Income (₹)</label>
+                        <input type="number" id="income" placeholder="80000" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Age</label>
+                        <input type="number" id="age" placeholder="32" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Number of Dependents</label>
+                        <input type="number" id="dependents" placeholder="2" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label>Profession</label>
+                        <select id="occupation" required>
+                            <option value="">Select Profession</option>
+                            <option value="IT_Professional">IT Professional</option>
+                            <option value="Doctor">Doctor</option>
+                            <option value="Engineer">Engineer</option>
+                            <option value="Teacher">Teacher</option>
+                            <option value="Business_Owner">Business Owner</option>
+                            <option value="Government_Employee">Government Employee</option>
+                            <option value="Banker">Banker</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>City Tier</label>
+                        <select id="cityTier" required>
+                            <option value="">Select City Type</option>
+                            <option value="Tier_1">Tier 1 (Mumbai, Delhi, Bangalore)</option>
+                            <option value="Tier_2">Tier 2 (Pune, Jaipur, Kochi)</option>
+                            <option value="Tier_3">Tier 3 (Smaller cities)</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Monthly Expenses Section -->
+            <div class="section">
+                <h2>💰 Monthly Expenses</h2>
+                <div class="form-group">
+                    <label>Rent/EMI (₹)</label>
+                    <input type="number" id="rent" placeholder="25000">
+                </div>
+                <div class="form-group">
+                    <label>Groceries (₹)</label>
+                    <input type="number" id="groceries" placeholder="8000">
+                </div>
+                <div class="form-group">
+                    <label>Transport (₹)</label>
+                    <input type="number" id="transport" placeholder="5000">
+                </div>
+                <div class="form-group">
+                    <label>Eating Out (₹)</label>
+                    <input type="number" id="eatingOut" placeholder="4000">
+                </div>
+                <div class="form-group">
+                    <label>Entertainment (₹)</label>
+                    <input type="number" id="entertainment" placeholder="3000">
+                </div>
+                <div class="form-group">
+                    <label>Healthcare (₹)</label>
+                    <input type="number" id="healthcare" placeholder="3000">
+                </div>
+            </div>
+
+            <!-- Financial Goals Section -->
+            <div class="section goals-section">
+                <h2>🎯 Financial Goals</h2>
+                <div id="goalsContainer">
+                    <div class="goal-item">
+                        <div>
+                            <label>Goal Name</label>
+                            <input type="text" class="goal-name" placeholder="Child's Education">
+                        </div>
+                        <div>
+                            <label>Target Amount (₹)</label>
+                            <input type="number" class="goal-amount" placeholder="5000000">
+                        </div>
+                        <div>
+                            <label>Years to Achieve</label>
+                            <input type="number" class="goal-years" placeholder="15">
+                        </div>
+                        <button type="button" class="btn" onclick="removeGoal(this)" style="background: #e74c3c; width: auto; padding: 10px 15px;">Remove</button>
+                    </div>
+                </div>
+                <button type="button" class="btn" onclick="addGoal()" style="background: #27ae60; margin-top: 15px;">+ Add Another Goal</button>
+                <button type="button" class="btn" onclick="generatePlan()" style="margin-top: 15px;">🚀 Generate My Financial Plan</button>
+            </div>
+
+            <!-- Loading Section -->
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Analyzing your financial profile using ML models...</p>
+            </div>
+
+            <!-- Results Section -->
+            <div class="section results-section" id="results" style="display: none;">
+                <h2>📊 Your Personalized Financial Plan</h2>
+                <div id="resultsContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function addGoal() {
+            const container = document.getElementById('goalsContainer');
+            const goalDiv = document.createElement('div');
+            goalDiv.className = 'goal-item';
+            goalDiv.innerHTML = `
+                <div>
+                    <label>Goal Name</label>
+                    <input type="text" class="goal-name" placeholder="Retirement Fund">
+                </div>
+                <div>
+                    <label>Target Amount (₹)</label>
+                    <input type="number" class="goal-amount" placeholder="10000000">
+                </div>
+                <div>
+                    <label>Years to Achieve</label>
+                    <input type="number" class="goal-years" placeholder="20">
+                </div>
+                <button type="button" class="btn" onclick="removeGoal(this)" style="background: #e74c3c; width: auto; padding: 10px 15px;">Remove</button>
+            `;
+            container.appendChild(goalDiv);
+        }
+
+        function removeGoal(button) {
+            button.parentElement.remove();
+        }
+
+        function collectUserData() {
+            return {
+                income: parseInt(document.getElementById('income').value) || 0,
+                age: parseInt(document.getElementById('age').value) || 0,
+                dependents: parseInt(document.getElementById('dependents').value) || 0,
+                occupation: document.getElementById('occupation').value,
+                cityTier: document.getElementById('cityTier').value,
+                rent: parseInt(document.getElementById('rent').value) || 0,
+                groceries: parseInt(document.getElementById('groceries').value) || 0,
+                transport: parseInt(document.getElementById('transport').value) || 0,
+                eatingOut: parseInt(document.getElementById('eatingOut').value) || 0,
+                entertainment: parseInt(document.getElementById('entertainment').value) || 0,
+                healthcare: parseInt(document.getElementById('healthcare').value) || 0
+            };
+        }
+
+        function collectGoals() {
+            const goals = [];
+            const goalItems = document.querySelectorAll('.goal-item');
+            
+            goalItems.forEach(item => {
+                const name = item.querySelector('.goal-name').value;
+                const amount = parseInt(item.querySelector('.goal-amount').value);
+                const years = parseInt(item.querySelector('.goal-years').value);
+                
+                if (name && amount && years) {
+                    goals.push({ name, amount, years });
+                }
+            });
+            
+            return goals;
+        }
+
+        function generatePlan() {
+            const userData = collectUserData();
+            const goals = collectGoals();
+
+            // Validation
+            if (!userData.income || !userData.age || goals.length === 0) {
+                alert('Please fill in all required fields and add at least one goal.');
+                return;
+            }
+
+            // Show loading
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('results').style.display = 'none';
+
+            // Call Flask API
+            fetch('/api/generate_plan', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    user_data: userData,
+                    goals: goals
+                })
+            })
+            .then(response => response.json())
+            .then(result => {
+                document.getElementById('loading').style.display = 'none';
+                
+                if (result.success) {
+                    displayResults(result.data);
+                    document.getElementById('results').style.display = 'block';
+                    document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    alert('Error: ' + result.error);
+                }
+            })
+            .catch(error => {
+                document.getElementById('loading').style.display = 'none';
+                alert('Network error: ' + error.message);
+                console.error('Error:', error);
+            });
+        }
+
+        function displayResults(data) {
+            const resultsDiv = document.getElementById('resultsContent');
+            const { personality, plans, recommendations } = data;
+            
+            let html = `
+                <div class="alert alert-success">
+                    <strong>🎉 Your Financial Plan is Ready!</strong><br>
+                    Generated using ML models trained on 20,000+ user profiles.
+                </div>
+
+                <div style="background: white; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                    <h3>🧠 Your Financial Personality (ML Predicted)</h3>
+                    <div class="personality-badge ${getPersonalityClass(personality)}">
+                        ${personality.replace(/_/g, ' ')}
+                    </div>
+                    <p style="margin-top: 15px;">
+                        This prediction is based on ML analysis of your spending patterns, demographics, and financial behavior.
+                    </p>
+                </div>
+            `;
+
+            Object.keys(plans).forEach(goalName => {
+                const plan = plans[goalName];
+                
+                html += `
+                    <div class="investment-plan">
+                        <h3>🎯 ${goalName}</h3>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 15px 0;">
+                            <div>
+                                <strong>Target Amount:</strong><br>
+                                ₹${plan.goal_amount.toLocaleString()}
+                            </div>
+                            <div>
+                                <strong>Time Horizon:</strong><br>
+                                ${plan.time_horizon} years
+                            </div>
+                            <div>
+                                <strong>Monthly Investment:</strong><br>
+                                <span class="amount">₹${Math.round(plan.monthly_investment).toLocaleString()}</span>
+                            </div>
+                            <div>
+                                <strong>Expected Return:</strong><br>
+                                ${plan.expected_return.toFixed(1)}% per annum
+                            </div>
+                        </div>
+                        
+                        <div class="alert ${getAchievabilityClass(plan.achievability)}">
+                            <strong>Achievability: ${plan.achievability}</strong>
+                        </div>
+
+                        <h4>💼 AI-Recommended Investment Mix:</h4>
+                `;
+
+                Object.keys(plan.investment_breakdown).forEach(investment => {
+                    const details = plan.investment_breakdown[investment];
+                    html += `
+                        <div class="investment-item">
+                            <div>
+                                <strong>${investment.replace(/_/g, ' ')}</strong>
+                                <span class="risk-indicator ${getRiskClass(details.risk_level)}">
+                                    ${details.risk_level}
+                                </span>
+                                ${details.tax_benefit ? '<span style="background: #27ae60; color: white; padding: 2px 6px; border-radius: 10px; font-size: 10px;">TAX SAVER</span>' : ''}
+                                <br>
+                                <small>Expected Return: ${details.expected_return}%</small>
+                            </div>
+                            <div style="text-align: right;">
+                                <div class="amount">₹${Math.round(details.monthly_amount).toLocaleString()}</div>
+                                <div class="percentage">${details.percentage.toFixed(1)}%</div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                html += `</div>`;
+            });
+
+            // Add recommendations
+            html += `
+                <div style="background: white; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                    <h3>💡 AI-Powered Recommendations</h3>
+            `;
+
+            recommendations.forEach(rec => {
+                html += `<div class="recommendation">${rec}</div>`;
+            });
+
+            html += `
+                    <div class="alert alert-info" style="background: #e3f2fd; color: #1565c0; border: 1px solid #bbdefb; margin-top: 20px;">
+                        <strong>📞 Next Steps:</strong><br>
+                        1. Start with emergency fund creation<br>
+                        2. Set up automatic SIP investments<br>
+                        3. Review and adjust annually<br>
+                        4. Consult a SEBI registered investment advisor for detailed planning
+                    </div>
+                </div>
+            `;
+
+            resultsDiv.innerHTML = html;
+        }
+
+        function getPersonalityClass(personality) {
+            switch(personality) {
+                case 'Aggressive_Investor': return 'aggressive';
+                case 'Heavy_Spender': return 'spender';
+                case 'Low_Risk_Investor': return 'conservative';
+                default: return 'moderate';
+            }
+        }
+
+        function getAchievabilityClass(achievability) {
+            switch(achievability) {
+                case 'High': return 'alert-success';
+                case 'Medium': return 'alert-warning';
+                default: return 'alert-danger';
+            }
+        }
+
+        function getRiskClass(riskLevel) {
+            if (riskLevel.includes('Low')) return 'risk-low';
+            if (riskLevel.includes('High')) return 'risk-high';
+            return 'risk-medium';
+        }
+
+        // Initialize with sample data for demo
+        window.onload = function() {
+            // Auto-fill some sample data
+            document.getElementById('income').value = '80000';
+            document.getElementById('age').value = '32';
+            document.getElementById('dependents').value = '2';
+            document.getElementById('rent').value = '25000';
+            document.getElementById('groceries').value = '8000';
+            document.getElementById('transport').value = '5000';
+            document.getElementById('eatingOut').value = '4000';
+            document.getElementById('entertainment').value = '3000';
+            document.getElementById('healthcare').value = '3000';
+        };
+    </script>
+</body>
+</html>
